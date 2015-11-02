@@ -6,6 +6,7 @@
 import re
 from expander import Expander
 from expander import SubstitutionRule
+from geodb import GeoIPDBMaxMind
 
 PATTERN=r'\[.*?\]'      # using non-greedy qualifier
 
@@ -50,7 +51,8 @@ r'''
 
         output = expander.expand(sample_input)
 
-        print output
+        self.geodb = GeoIPDBMaxMind()
+        print self.geodb.search_as_name(["univer"])
 
 Geochains()
 
