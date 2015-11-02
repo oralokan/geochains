@@ -5,7 +5,7 @@
 
 import re
 from expander import Expander
-from substitution_rule import SubstitutionRule 
+from expander import SubstitutionRule
 
 PATTERN=r'\[.*?\]'      # using non-greedy qualifier
 

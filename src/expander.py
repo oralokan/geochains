@@ -4,7 +4,10 @@
 # modified: november 2, 2015
 
 import re
-import substitution_rule
+
+class SubstitutionRule(object):
+    def values_for_match(self, match):
+        pass
 
 class Expander(object):
     '''
