@@ -48,16 +48,15 @@ class Geochains:
         self.sub_rule = GeochainsSubstitutionRule()
         self.geodb = GeoIPDBMaxMind()
         self.sub_rule.geodb = self.geodb
-        expander = Expander(self.pattern, self.sub_rule)
+        self.expander = Expander(self.pattern, self.sub_rule)
 
-        sample_input = \
-r'''
-this is a country rule [AS:orta dogu teknik] 
-'''
+    def process_file(self, filename):
+        f = open(filename, 'r')
+        input_str = f.read()
+        f.close()
+        self.process_input(input_str)
 
-        output = expander.expand(sample_input)
+    def process_input(self, input_str):
+        output = self.expander.expand(input_str)
         print output
-
-
-Geochains()
 
