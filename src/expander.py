@@ -122,6 +122,11 @@ class Expander(object):
             return in_line      # ending condition
 
         subs_vals = self.substitution_rule.values_for_match(match.group())
+
+        if not subs_vals:
+            # The substitution rule doesn't know how to handle the match
+            raise ValueError("Invalid substitution pattern")
+
         span = match.span()
         head = in_line[:span[0]]
         tail = in_line[span[1]:]
