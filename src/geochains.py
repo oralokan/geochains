@@ -28,7 +28,7 @@ class GeochainsSubstitutionRule(SubstitutionRule):
             return self.geodb.query_cn_ip(query_list)
 
         elif query_type == 'AS':
-            return self.country_search(query_list)
+            return self.geodb.query_as_ip(query_list)
 
         else:
             print "ERROR: Malformed pattern: {}".format(matched)
@@ -52,7 +52,7 @@ class Geochains:
 
         sample_input = \
 r'''
-this is a country rule [CN:turkey,greece] 
+this is a country rule [AS:orta dogu teknik] 
 '''
 
         output = expander.expand(sample_input)

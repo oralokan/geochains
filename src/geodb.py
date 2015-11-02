@@ -1,5 +1,14 @@
 import re
 
+def int2ipv4(i):
+    ip=[]
+    for j in range(4):
+        ip += [i/256**(3-j)]
+        i -= ip[j] * 256**(3-j)
+    ips = [str(x) for x in ip]
+    return '.'.join(ips)
+
+
 class GeoIPDB(object):
     def query_cn_ip(self, patterns):
         pass
@@ -35,12 +44,16 @@ class GeoIPDBMaxMind(GeoIPDB):
         results = []
         for cn in names:
             cn_ips = self.cn_ip_range(cn)
-            print cn_ips
             results += cn_ips
         return results
 
     def query_as_ip(self, patterns):
-        pass
+        names = self.search_as_name(patterns)
+        results = []
+        for a in names:
+            a_ips = self.as_ip_range(a) 
+            results += a_ips
+        return results
 
     def search_cn_name(self, patterns):
         names = set()
@@ -66,4 +79,11 @@ class GeoIPDBMaxMind(GeoIPDB):
 
     def as_ip_range(self, name):
         # FIXME: AS numbers and IP addresses might get mixed up in regex
-        pass
+        results = []
+        records = re.compile(r'.*{}.*'.format(name)).findall(self.as_db)
+        for a in records:
+            l = a.split(',')
+            start_ip = int2ipv4(int(l[0]))
+            end_ip = int2ipv4(int(l[1]))
+            results.append("{}-{}".format(start_ip, end_ip))
+        return results
