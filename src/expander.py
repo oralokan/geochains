@@ -58,25 +58,57 @@ class Expander(object):
         3. Set the substitute_callback function
     '''
 
+    def __init__(self, pattern, callback):
+        self.pattern = pattern
+        self.callback = callback
+
+    # MAIN INTERFACE
+
+    def expand(self, in_str):
+        '''
+        Expand template lines in the provided string.
+        See the class' docstring for more information.
+        '''
+        lines = in_str.split('\n')
+        expanded_lines = [self._expand_line(l) for l in lines]
+        out_str = '\n'.join(expanded_lines) 
+        return out_str
+
+    # GETTERS AND SETTERS
 
     @property
     def pattern(self):
         return self.__pattern
 
     @pattern.setter
-    def pattern(self, pstr):
-        def is_valid_input(in_str):
+    def pattern(self, pattern):
+        def is_valid_input(p):
             # TODO: Do input validation
-            if pstr == None:
-                return False
             return True
-        if is_valid_input(pstr):
-            self.__pattern = pstr
-            self.__rgx = re.compile(pstr)
+        if is_valid_input(pattern):
+            self.__pattern = pattern
+            self.__rgx = re.compile(pattern)
         else:
             self.__pattern = None
             self.__rgx = None
             raise ValueError("Illegal pattern input, value set to None")
+
+    @property
+    def callback(self):
+        return self.__callback
+
+    @callback.setter
+    def callback(self, callback):
+        def is_valid_input(cf):
+            # TODO: Do input validation
+            return True
+        if is_valid_input(callback):
+            self.__callback = callback
+        else:
+            self.__callback = None
+            raise ValueError("Illegal callback function")
+
+    # INTERNAL METHODS
 
     def _expand_line(self, in_line):
         '''
@@ -86,7 +118,7 @@ class Expander(object):
         if not match:
             return in_line      # ending condition
 
-        subs_vals = self.substitute_callback(match.group())
+        subs_vals = self.callback(match.group())
         span = match.span()
         head = in_line[:span[0]]
         tail = in_line[span[1]:]
@@ -111,12 +143,3 @@ class Expander(object):
         return result
         
 
-    def expand(self, in_str):
-        '''
-        Expand template lines in the provided string.
-        See the class' docstring for more information.
-        '''
-        lines = in_str.split('\n')
-        expanded_lines = [self._expand_line(l) for l in lines]
-        out_str = '\n'.join(expanded_lines) 
-        return out_str
