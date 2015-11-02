@@ -1,11 +1,14 @@
 # expander.py
 # author: oral okan
 # date: november 1, 2015
+# modified: november 2, 2015
 
 import re
+import substitution_rule
 
 class Expander(object):
     '''
+    TODO: SubstitutionRule documentation
     Expands template lines in a string of text.
 
     A template line is a single line that can be used to describe multiple
@@ -55,12 +58,12 @@ class Expander(object):
     The usage of the class is as follows:
         1. Instantiate an Expander object
         2. Set the pattern
-        3. Set the substitute_callback function
+        3. Set the substitute_substitution_rule function
     '''
 
-    def __init__(self, pattern, callback):
+    def __init__(self, pattern, substitution_rule):
         self.pattern = pattern
-        self.callback = callback
+        self.substitution_rule = substitution_rule
 
     # MAIN INTERFACE
 
@@ -94,19 +97,19 @@ class Expander(object):
             raise ValueError("Illegal pattern input, value set to None")
 
     @property
-    def callback(self):
-        return self.__callback
+    def substitution_rule(self):
+        return self.__substitution_rule
 
-    @callback.setter
-    def callback(self, callback):
+    @substitution_rule.setter
+    def substitution_rule(self, substitution_rule):
         def is_valid_input(cf):
             # TODO: Do input validation
             return True
-        if is_valid_input(callback):
-            self.__callback = callback
+        if is_valid_input(substitution_rule):
+            self.__substitution_rule = substitution_rule
         else:
-            self.__callback = None
-            raise ValueError("Illegal callback function")
+            self.__substitution_rule = None
+            raise ValueError("Illegal substitution_rule function")
 
     # INTERNAL METHODS
 
@@ -118,7 +121,7 @@ class Expander(object):
         if not match:
             return in_line      # ending condition
 
-        subs_vals = self.callback(match.group())
+        subs_vals = self.substitution_rule.values_for_match(match.group())
         span = match.span()
         head = in_line[:span[0]]
         tail = in_line[span[1]:]

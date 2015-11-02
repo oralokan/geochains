@@ -1,21 +1,22 @@
 # test the expander
 
 import unittest
-from src import expander
+from src.expander import Expander
+from src.substitution_rule import SubstitutionRule 
 
+class MySubstitutionRule(SubstitutionRule):
+    def values_for_match(self, matched):
+        if matched == r'[D]':
+            return ['1','2']
 
-def sample_callback(matched):
-    if matched == r'[D]':
-        return ['1','2']
-
-    if matched == r'[L]':
-        return ['a', 'b']
+        if matched == r'[L]':
+            return ['a', 'b']
 
 
 class TestStringMethods(unittest.TestCase):
 
     def setUp(self):
-        self.expander = expander.Expander(r'\[.\]', sample_callback)
+        self.expander = Expander(r'\[.\]', MySubstitutionRule())
 
     def test_single_expansion(self):
         '''
