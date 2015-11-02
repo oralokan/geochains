@@ -61,7 +61,7 @@ class GeoIPDBMaxMind(GeoIPDB):
     def cn_ip_range(self, name):
         results = []
         records = re.compile(r'.*{}.*'.format(name)).findall(self.cn_db)
-        results = [(name, "{}-{}".format(x.split(',')[0][1:-1], x.split(',')[1][1:-1])) for x in records] 
+        results = ["{}-{}".format(x.split(',')[0][1:-1], x.split(',')[1][1:-1]) for x in records] 
         return results
 
     def as_ip_range(self, name):

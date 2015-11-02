@@ -6,11 +6,16 @@
 import re
 from expander import Expander
 from expander import SubstitutionRule
+from geodb import GeoIPDB
 from geodb import GeoIPDBMaxMind
 
 PATTERN=r'\[.*?\]'      # using non-greedy qualifier
 
 class GeochainsSubstitutionRule(SubstitutionRule):
+
+    def __init__(self):
+        self.geodb = None
+
     def values_for_match(self, matched):
         try:
             query_type = re.compile(r'\[.*?:').search(matched).group()[1:-1].strip()
@@ -20,7 +25,7 @@ class GeochainsSubstitutionRule(SubstitutionRule):
             raise SystemExit
         
         if query_type == 'CN':
-            return self.country_search(query_list)
+            return self.geodb.query_cn_ip(query_list)
 
         elif query_type == 'AS':
             return self.country_search(query_list)
@@ -41,20 +46,18 @@ class Geochains:
     def __init__(self):
         self.pattern = PATTERN
         self.sub_rule = GeochainsSubstitutionRule()
+        self.geodb = GeoIPDBMaxMind()
+        self.sub_rule.geodb = self.geodb
         expander = Expander(self.pattern, self.sub_rule)
 
         sample_input = \
 r'''
-[CN:turkey,usa] 
-[AS:13,421]
+this is a country rule [CN:turkey,greece] 
 '''
 
         output = expander.expand(sample_input)
+        print output
 
-        self.geodb = GeoIPDBMaxMind()
-        x = self.geodb.query_cn_ip(["turkey"])
-        for l in x:
-            print l
 
 Geochains()
 
