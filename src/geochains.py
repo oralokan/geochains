@@ -52,7 +52,9 @@ r'''
         output = expander.expand(sample_input)
 
         self.geodb = GeoIPDBMaxMind()
-        print self.geodb.search_as_name(["univer"])
+        x = self.geodb.query_cn_ip(["turkey"])
+        for l in x:
+            print l
 
 Geochains()
 
